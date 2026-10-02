@@ -82,7 +82,7 @@ export class Speaker {
 }
 export class Viewer {
   renderer:T.WebGLRenderer|null=null;scene=new T.Scene();camera=new T.PerspectiveCamera(34,1,.1,100);speaker:Speaker|null=null;root=new T.Group();
-  yaw=-.40;pitch=.055;targetYaw=-.40;targetPitch=.055;amount=0;active=true;motion=true;frame=0;renders=0;last=0;width=0;height=0;observer:ResizeObserver;visibility:IntersectionObserver;environment:T.Texture|null=null;
+  yaw=-.40;pitch=.055;targetYaw=-.40;targetPitch=.055;amount=0;renderedAmount=-1;active=true;motion=true;frame=0;renders=0;last=0;width=0;height=0;observer:ResizeObserver;visibility:IntersectionObserver;environment:T.Texture|null=null;
   constructor(public host:HTMLElement,public config:Config,public anatomy=false){
     this.observer=new ResizeObserver(()=>this.resize());this.observer.observe(host);
     this.visibility=new IntersectionObserver(entries=>{this.active=entries[0].isIntersecting;if(this.active)this.invalidate();},{rootMargin:'80px'});this.visibility.observe(host);
@@ -108,11 +108,11 @@ export class Viewer {
     this.root.rotation.set(this.pitch,this.yaw,0);
     const bound=new T.Box3().setFromObject(this.root),size=bound.getSize(new T.Vector3()),center=bound.getCenter(new T.Vector3());this.root.position.sub(center);
     const v=T.MathUtils.degToRad(this.camera.fov/2),distance=Math.max(size.y/2/Math.tan(v),size.x/2/(Math.tan(v)*this.camera.aspect))+size.z/2;
-    this.camera.position.set(0,0,distance*1.18);this.camera.lookAt(0,0,0);this.renderer.render(this.scene,this.camera);this.renders++;
+    this.camera.position.set(0,0,distance*1.18);this.camera.lookAt(0,0,0);this.renderer.render(this.scene,this.camera);this.renderedAmount=this.amount;this.renders++;
     if(Math.abs(this.yaw-this.targetYaw)>.0001||Math.abs(this.pitch-this.targetPitch)>.0001)this.invalidate();
   }
   capture(config:Config){if(!this.renderer)return undefined;const current={...this.config},yaw=this.targetYaw,pitch=this.targetPitch,amount=this.amount;this.setConfig(config);this.yaw=this.targetYaw=-.4;this.pitch=this.targetPitch=.055;this.setAmount(0);this.render(performance.now(),true);const canvas=document.createElement('canvas');canvas.width=360;canvas.height=300;const ctx=canvas.getContext('2d')!;ctx.fillStyle='#1c201c';ctx.fillRect(0,0,360,300);const source=this.renderer.domElement;const factor=Math.min(360/source.width,300/source.height);ctx.drawImage(source,(360-source.width*factor)/2,(300-source.height*factor)/2,source.width*factor,source.height*factor);const image=canvas.toDataURL('image/webp',.76);this.setConfig(current);this.setAmount(amount);this.setView(yaw,pitch);return image;}
   bounds(){if(!this.speaker||!this.renderer)return null;const box=new T.Box3().setFromObject(this.root),points=[];for(const x of [box.min.x,box.max.x])for(const y of [box.min.y,box.max.y])for(const z of [box.min.z,box.max.z]){const p=new T.Vector3(x,y,z).project(this.camera);points.push({x:(p.x+1)*this.width/2,y:(1-p.y)*this.height/2});}return {left:Math.min(...points.map(p=>p.x)),right:Math.max(...points.map(p=>p.x)),top:Math.min(...points.map(p=>p.y)),bottom:Math.max(...points.map(p=>p.y))};}
-  diagnostics(){return {webgl:!!this.renderer,renders:this.renders,calls:this.renderer?.info.render.calls,triangles:this.renderer?.info.render.triangles,bounds:this.bounds(),width:this.width,height:this.height,amount:this.amount};}
+  diagnostics(){return {webgl:!!this.renderer,renders:this.renders,calls:this.renderer?.info.render.calls,triangles:this.renderer?.info.render.triangles,bounds:this.bounds(),width:this.width,height:this.height,amount:this.amount,renderedAmount:this.renderedAmount};}
   dispose(){cancelAnimationFrame(this.frame);this.observer.disconnect();this.visibility.disconnect();this.speaker?.dispose();this.environment?.dispose();this.renderer?.dispose();}
 }
