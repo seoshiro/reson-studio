@@ -1,0 +1,5 @@
+import {readFile,writeFile,stat} from 'node:fs/promises';
+const path='dist/index.html';let html=await readFile(path,'utf8');const policy="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'";
+html=html.replace('<meta charset="UTF-8">',`<meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="${policy}"><meta name="referrer" content="strict-origin-when-cross-origin"><link rel="canonical" href="https://seoshiro.github.io/reson-studio/">`);await writeFile(path,html);
+for(const link of [...html.matchAll(/(?:src|href)="([^"]+)"/g)].map(m=>m[1]).filter(x=>!x.startsWith('https:'))){const url=new URL(link,'https://example.test/reson-studio/');if(!url.pathname.startsWith('/reson-studio/'))throw Error(`Path escape: ${link}`);await stat(`dist/${url.pathname.slice(14)}`);}
+await stat('dist/stills/speaker.webp');await stat('dist/version.json');console.log('Verified subpath assets, fallback, version and production CSP.');

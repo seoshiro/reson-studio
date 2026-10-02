@@ -1,0 +1,5 @@
+import {chromium} from '@playwright/test';
+import {readFile} from 'node:fs/promises';
+const browser=await chromium.launch({headless:true,executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe'}),page=await browser.newPage({viewport:{width:1440,height:1600}});
+for(const name of ['desktop','mobile']){const cells=[];for(let i=0;i<13;i++){const bytes=await readFile(`../evidence/motion/${name}-${i}.png`);cells.push(`<figure><img src="data:image/png;base64,${bytes.toString('base64')}"><figcaption>${i<7?'Forward':'Reverse'} / ${i+1}</figcaption></figure>`);}await page.setContent(`<body style="margin:0;padding:16px;background:#101410;color:#eee;font:16px Arial;display:grid;grid-template-columns:repeat(4,1fr);gap:12px">${cells.join('')}<style>figure{margin:0;background:#252a24}img{width:100%;height:${name==='desktop'?240:500}px;object-fit:contain}figcaption{padding:10px}</style></body>`);await page.screenshot({path:`../evidence/motion/${name}-contact.png`,fullPage:true});}
+await browser.close();
