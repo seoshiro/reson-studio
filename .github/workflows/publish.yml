@@ -13,6 +13,12 @@ jobs:
   verify:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+    strategy:
+      fail-fast: true
+      matrix:
+        group: [wide, narrow]
+    env:
+      RESON_AUDIT_GROUP: ${{ matrix.group }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
         with:
@@ -31,10 +37,10 @@ jobs:
           node scripts/serve.mjs > /tmp/reson-preview.log 2>&1 &
           for i in $(seq 1 40); do curl -fsS http://127.0.0.1:5515/reson-studio/ && break || sleep 1; done
           RESON_URL=http://127.0.0.1:5515/reson-studio/ npm run test:browser
-          RESON_URL=http://127.0.0.1:5515/reson-studio/ node scripts/verify-text.mjs
-          RESON_URL=http://127.0.0.1:5515/reson-studio/ node scripts/verify-frame-sync.mjs
+          if [ "$RESON_AUDIT_GROUP" = narrow ]; then RESON_URL=http://127.0.0.1:5515/reson-studio/ node scripts/verify-text.mjs; fi
+          if [ "$RESON_AUDIT_GROUP" = wide ]; then RESON_URL=http://127.0.0.1:5515/reson-studio/ node scripts/verify-frame-sync.mjs; fi
       - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        if: matrix.group == 'wide' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         with:
           path: dist
           retention-days: 1

@@ -14,6 +14,7 @@ RESON is an original visual loudspeaker concept. Geometry, finishes and displaye
 - Ten regular Chrome contexts: desktop 1440×1000, laptop 1280×800, tablet 768×1024, mobile 390×844, small mobile 320×568, RU and KK at 390×844 and 320×568, landscape 844×390.
 - Forward and reverse scroll samples, camera containment, caption separation, all configuration controls, named alternatives, side-by-side comparison, persistence after reload, unique names and six-design capacity.
 - Geometry assertions wait for the matching painted frame. A regression deliberately delays animation callbacks by 140 ms and verifies forward/reverse containment with the same two-pixel bounds; this prevents sampling pending geometry against the previous camera.
+- Window resize preserves the current construction progress while inside the study. Phone orientation changes stay in the current chapter rather than jumping out of the shortened scroll region.
 - Keyboard rotation, native mobile touch scrolling, interrupted workflows, reviewed valid imports, malformed/dimension-invalid/duplicate imports, cancellation, collection undo and JSON download.
 - Import and deletion confirmations commit on form submission; cancellation clears pending state immediately. Delayed close callbacks cannot act on a later dialog, and revision checks discard stale asynchronous file reads. These repeat/interruption regressions run first in the browser audit.
 - Forced no-WebGL fallback, actual WebGL context loss with continued saving, reduced motion, denied storage and automated WCAG A/AA checks.
