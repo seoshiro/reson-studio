@@ -11,3 +11,6 @@
 @media(prefers-reduced-motion:reduce){:root{scroll-behavior:auto}*{transition:none!important}}
 .text-enlarged .scroll-study{height:auto}.text-enlarged .anatomy-sticky{position:relative;height:auto;display:flex;flex-direction:column;overflow:visible}.text-enlarged .anatomy-caption{height:auto;max-width:none;align-self:stretch}.text-enlarged .anatomy-visual{height:420px;min-height:420px;flex:auto}.text-enlarged .chapter-controls{flex-wrap:wrap}.text-enlarged .manual{margin-left:0}.text-enlarged .anatomy-intro{display:block}.text-enlarged .anatomy-intro>p:last-child{margin-top:1.5rem}
 .text-enlarged .chapter-buttons{flex-wrap:wrap;min-width:0}.text-enlarged .manual{width:100%;min-width:0;grid-template-columns:1fr}.text-enlarged .manual span{grid-column:1;text-align:left}.text-enlarged .manual input{min-width:0}
+h1,h2,h3{overflow-wrap:anywhere}.text-enlarged .save-row{display:flex;flex-direction:column}.text-enlarged .save-row input,.text-enlarged .save-row button{min-width:0;overflow-wrap:anywhere}
+.text-enlarged .text-link{white-space:normal;max-width:100%;overflow-wrap:anywhere;align-items:flex-start}.text-enlarged .view-buttons{flex-wrap:wrap;min-width:0;max-width:100%}
+.empty,.saved-card{min-width:0}.empty p{overflow-wrap:anywhere}.text-enlarged .view-tools>button{white-space:normal;max-width:100%;overflow-wrap:anywhere}
